@@ -1,0 +1,86 @@
+spring:
+  application:
+    name: jbd-backend
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/jbd_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+    username: ${DB_USERNAME:your_db_username}
+    password: ${DB_PASSWORD:your_db_password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:your_google_client_id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:your_google_client_secret}
+            scope:
+              - profile
+              - email
+            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
+            user-name-attribute: email
+
+  mail:
+    host: smtp.sendgrid.net
+    port: 587
+    username: apikey
+    password: ${SENDGRID_API_KEY:your_sendgrid_api_key}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+logging:
+  level:
+    org.jbd.backend: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.context: DEBUG
+
+jwt:
+  secret: ${JWT_SECRET:your_jwt_secret_key_here}
+  access-token-expiration: 86400000
+  refresh-token-expiration: 604800000
+
+cors:
+  allowed-origins: http://localhost:3000,http://localhost:3001,http://localhost:3002
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS,PATCH
+  allowed-headers: "*"
+  allow-credentials: true
+
+ai-service:
+  base-url: http://localhost:8001
+  endpoints:
+    sentiment-analysis: /api/v1/sentiment/analyze
+    chatbot: /api/v1/chatbot/chat
+    interview: /api/v1/interview/generate-questions
+    cover-letter: /api/v1/cover-letter/generate-questions
+    translation: /api/v1/translation/translate
+    image-generation: /api/v1/image/generate
+
+admin:
+  secret-key: ${ADMIN_SECRET_KEY:your_admin_secret_key}
+
+google:
+  oauth2:
+    redirect-uri: http://localhost:3000/auth/callback
+
+server:
+  port: 8081
